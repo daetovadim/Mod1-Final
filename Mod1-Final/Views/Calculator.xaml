@@ -1,0 +1,56 @@
+﻿<Window x:Class="Mod1_Final.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Mod1_Final"
+        xmlns:vm="clr-namespace:Mod1_Final.ViewModels"
+        mc:Ignorable="d"
+        Title="Calculator" Height="600" Width="450" Icon="icons/calc.png"
+        MinHeight="400" MinWidth="200" Style="{DynamicResource WindowStyle}" MaxHeight="800" MaxWidth="600" WindowStartupLocation="CenterScreen">
+    <Window.DataContext>
+        <vm:CalculatorViewModel/>
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        <TextBox Style="{DynamicResource TextBoxStyle}"
+                 Text="{Binding Path=Field}"
+                 IsReadOnly="True"/>
+        <Image x:Name="themeIcon"
+               Source="{DynamicResource themeIconSource}"
+               Width="50"
+               Height="50"
+               VerticalAlignment="Top"
+               HorizontalAlignment="Left"
+               MouseUp="Image_MouseUp"/>
+        <UniformGrid Grid.Row="1" Columns="4" Rows="6">
+            <Button Content="AC" Command="{Binding Path=DeleteCommands}" CommandParameter="ac"/>
+            <Button Content="%"/>
+            <Button Content="√"/>
+            <Button Content="←" Command="{Binding Path=DeleteCommands}" CommandParameter="c"/>
+            <Button Content="(" Command="{Binding Path=BracketsCommand}" CommandParameter="("/>
+            <Button Content=")" Command="{Binding Path=BracketsCommand}" CommandParameter=")"/>
+            <Button Content="^"/>
+            <Button Content="÷" Command="{Binding Path=OperationCommand}" CommandParameter="/"/>
+            <Button Content="7" Command="{Binding Path=NumCommand}" CommandParameter="7"/>
+            <Button Content="8" Command="{Binding Path=NumCommand}" CommandParameter="8"/>
+            <Button Content="9" Command="{Binding Path=NumCommand}" CommandParameter="9"/>
+            <Button Content="×" Command="{Binding Path=OperationCommand}" CommandParameter="*"/>
+            <Button Content="4" Command="{Binding Path=NumCommand}" CommandParameter="4"/>
+            <Button Content="5" Command="{Binding Path=NumCommand}" CommandParameter="5"/>
+            <Button Content="6" Command="{Binding Path=NumCommand}" CommandParameter="6"/>
+            <Button Content="-" Command="{Binding Path=OperationCommand}" CommandParameter="-"/>
+            <Button Content="1" Command="{Binding Path=NumCommand}" CommandParameter="1"/>
+            <Button Content="2" Command="{Binding Path=NumCommand}" CommandParameter="2"/>
+            <Button Content="3" Command="{Binding Path=NumCommand}" CommandParameter="3"/>
+            <Button Content="+" Command="{Binding Path=OperationCommand}" CommandParameter="+"/>
+            <Button Content="+/-"/>
+            <Button Content="0" Command="{Binding Path=NumCommand}" CommandParameter="0"/>
+            <Button Content="," Command="{Binding Path=NumCommand}" CommandParameter=","/>
+            <Button Content="=" Command="{Binding Path=CountCommand}"/>
+        </UniformGrid>
+    </Grid>
+</Window>
