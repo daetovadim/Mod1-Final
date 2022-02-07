@@ -20,20 +20,20 @@ namespace Mod1_Final.Models
             string x = (Convert.ToDouble(members[0]) - Convert.ToDouble(members[1])).ToString();
             return x;
         }
-        public static double Mult(string expr)
+        public static string Mult(string expr)
         {
             string[] members = expr.Split('*');
-            double x = Convert.ToDouble(members[0]) * Convert.ToDouble(members[1]);
+            string x = (Convert.ToDouble(members[0]) - Convert.ToDouble(members[1])).ToString();
             return x;
         }
-        public static double Div(string expr)
+        public static string Div(string expr)
         {
             string[] members = expr.Split('/');
-            double x = Convert.ToDouble(members[0]) / Convert.ToDouble(members[1]);
+            string x = (Convert.ToDouble(members[0]) - Convert.ToDouble(members[1])).ToString();
             return x;
         }
-        public static bool BracketsCheck(string s, out int[,] indArray, int a = 0) //Метод определяет правильность расстановки скобок и определяет очерёдность их раскрытия
-        {
+        public static bool BracketsCheck(string s, out int[,] indArray, int a = 0) //Метод определяет правильность расстановки скобок 
+        {                                                                          //и определяет очерёдность их раскрытия
             if (a == 0)
             {
                 indArray = null;
@@ -43,8 +43,8 @@ namespace Mod1_Final.Models
             {
                 Stack<char> brackets = new Stack<char>();
                 Stack<int> brInd = new Stack<int>();
-                indArray = new int[a, 2];
-                int r = 0; //Номер строки в массиве для индексов открывающих и закрывающих скобок
+                indArray = new int[a, 2];                   //Массив индексов открывающих и закрывающих скобок
+                int r = 0;                                  //Номер строки в массиве для индексов открывающих и закрывающих скобок
                 for (int i = 0; i < s.Length; i++)
                 {
                     if (s[i] == '(')
@@ -68,8 +68,6 @@ namespace Mod1_Final.Models
                 else
                     return false;
             }
-
-
         }
     }
 }

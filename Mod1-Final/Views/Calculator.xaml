@@ -27,13 +27,13 @@
                HorizontalAlignment="Left"
                MouseUp="Image_MouseUp"/>
         <UniformGrid Grid.Row="1" Columns="4" Rows="6">
-            <Button Content="AC" Command="{Binding Path=DeleteCommands}" CommandParameter="ac"/>
+            <Button Content="AC" Command="{Binding Path=DeleteCommand}" CommandParameter="ac"/>
             <Button Content="%"/>
-            <Button Content="√"/>
-            <Button Content="←" Command="{Binding Path=DeleteCommands}" CommandParameter="c"/>
+            <Button Content="√" Command="{Binding Path=PowCommand}" CommandParameter="sqrt"/>
+            <Button Content="←" Command="{Binding Path=DeleteCommand}" CommandParameter="c"/>
             <Button Content="(" Command="{Binding Path=BracketsCommand}" CommandParameter="("/>
             <Button Content=")" Command="{Binding Path=BracketsCommand}" CommandParameter=")"/>
-            <Button Content="^"/>
+            <Button Content="^" Command="{Binding Path=PowCommand}" CommandParameter="^"/>
             <Button Content="÷" Command="{Binding Path=OperationCommand}" CommandParameter="/"/>
             <Button Content="7" Command="{Binding Path=NumCommand}" CommandParameter="7"/>
             <Button Content="8" Command="{Binding Path=NumCommand}" CommandParameter="8"/>
