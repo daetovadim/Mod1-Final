@@ -21,9 +21,6 @@ namespace Mod1_Final.ViewModels
         }
 
         #region Fields
-        private double x;
-        private double y;
-        private double z;
         private string field;
         private byte openBrCounter = 0;
         private byte closeBrCounter = 0;
@@ -78,7 +75,16 @@ namespace Mod1_Final.ViewModels
             }
             else if ((string)p == ")" && (Byte.TryParse(Field.Substring(Field.Length - 1), out byte r) || Field.Substring(Field.Length - 1) == ")") && closeBrCounter < openBrCounter)
             {
-                Field += (string)p;
+                int openBrInd = Field.LastIndexOf('(');
+                string expr = Field.Substring(openBrInd + 1);
+                if (expr.Contains("+"))
+                    Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Add(expr));
+                else if (expr.Contains("-"))
+                    Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Sub(expr));
+                else if (expr.Contains("*"))
+                    Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Mult(expr));
+                else if (expr.Contains("/"))
+                    Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Div(expr));
                 closeBrCounter++;
             }
             else if ((string)p == "(" && !(Field.EndsWith(",") || Field.EndsWith(")")))
@@ -145,30 +151,15 @@ namespace Mod1_Final.ViewModels
                     }
                 }
             }
-            //else if (expression.Contains("+"))
-            //{
-            //    undOperation = Calc.Add(expression).PadRight(expressionLength + 2);
-            //    Field = Field.Remove(openBrInd, expressionLength + 2).Insert(openBrInd, undOperation);
-            //}
-            //else if (undOperation.Contains("-"))
-            //{
-            //    undOperation = Calc.Sub(expression).PadRight(expressionLength + 2);
-            //    Field = Field.Remove(openBrInd, expressionLength + 2).Insert(openBrInd, undOperation);
-            //}
-            //else if (undOperation.Contains("*"))
-            //{
-            //    undOperation = Calc.Mult(expression).PadRight(expressionLength + 2);
-            //    Field = Field.Remove(openBrInd, expressionLength + 2).Insert(openBrInd, undOperation);
-            //}
-            //else if (undOperation.Contains("/"))
-            //{
-            //    undOperation = Calc.Div(expression).PadRight(expressionLength + 2);
-            //    Field = Field.Remove(openBrInd, expressionLength + 2).Insert(openBrInd, undOperation);
-            //}
+            else if (Field.Contains("^"))
+            {
+
+            }
+
         }
         private bool CanCountCommandExecuted(object p)
         {
-            if (Field != null || Field != "0")
+            if ((Field != null || Field != "0") && openBrCounter == closeBrCounter)
                 return true;
             else
                 return false;
@@ -207,7 +198,10 @@ namespace Mod1_Final.ViewModels
         private void OnPowCommandExecute(object p)
         {
             if ((string)p == "^")
+            {
+                Double.TryParse(Field.Substring(Field.LastIndexOfAny(operators) + 1), out double v);
                 Field += "^(";
+            }
             else
             {
                 Double.TryParse(Field.Substring(Field.LastIndexOfAny(operators) + 1), out double val);
