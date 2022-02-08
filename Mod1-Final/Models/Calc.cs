@@ -23,13 +23,13 @@ namespace Mod1_Final.Models
         public static string Mult(string expr)
         {
             string[] members = expr.Split('*');
-            string x = (Convert.ToDouble(members[0]) - Convert.ToDouble(members[1])).ToString();
+            string x = (Convert.ToDouble(members[0]) * Convert.ToDouble(members[1])).ToString();
             return x;
         }
         public static string Div(string expr)
         {
             string[] members = expr.Split('/');
-            string x = (Convert.ToDouble(members[0]) - Convert.ToDouble(members[1])).ToString();
+            string x = (Convert.ToDouble(members[0]) / Convert.ToDouble(members[1])).ToString();
             return x;
         }
         public static bool BracketsCheck(string s, out int[,] indArray, int a = 0) //Метод определяет правильность расстановки скобок 

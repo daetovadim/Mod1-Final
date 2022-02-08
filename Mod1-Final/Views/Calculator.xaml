@@ -26,6 +26,11 @@
                VerticalAlignment="Top"
                HorizontalAlignment="Left"
                MouseUp="Image_MouseUp"/>
+        <TextBlock Text="{Binding Path=FieldToShow}"
+                   Width="300"
+                   Height="50"
+                   VerticalAlignment="Top"
+                   HorizontalAlignment="Right"/>
         <UniformGrid Grid.Row="1" Columns="4" Rows="6">
             <Button Content="AC" Command="{Binding Path=DeleteCommand}" CommandParameter="ac"/>
             <Button Content="%"/>

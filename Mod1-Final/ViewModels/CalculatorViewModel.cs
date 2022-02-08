@@ -22,9 +22,12 @@ namespace Mod1_Final.ViewModels
 
         #region Fields
         private string field;
+        private string fieldToShow;
+        private string expression;
         private byte openBrCounter = 0;
         private byte closeBrCounter = 0;
         private char[] operators = { '+', '-', '*', '/', '(' };
+        private char[] numbers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
         #endregion Fields
 
         #region Properties
@@ -43,27 +46,47 @@ namespace Mod1_Final.ViewModels
                 OnPropertyChanged();
             }
         }
+        public string FieldToShow
+        {
+            get
+            {
+                return fieldToShow;
+            }
+            set
+            {
+                fieldToShow = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion Properties
 
         #region NumCommand
         public ICommand NumCommand { get; }
         private void OnNumCommandExecute(object p)
         {
-            if ((string)p == "," && Byte.TryParse(Field.Substring(Field.Length - 1), out byte r))
+            if ((string)p == "," && Field.LastIndexOfAny(numbers) == Field.Length - 1)
+            {
                 Field += p.ToString();
+                FieldToShow += p.ToString();
+            }
             else if (Field == "0")
             {
                 Field = "";
                 Field += p.ToString();
+                FieldToShow += p.ToString();
             }
             else if (!(Field.EndsWith(")") || (string)p == ","))
+            {
                 Field += p.ToString();
+                FieldToShow += p.ToString();
+            }
         }
         private bool CanNumCommandExecuted(object p)
         {
             return true;
         }
         #endregion
+
         #region BracketsCommand
         public ICommand BracketsCommand { get; }
         private void OnBracketsCommandExecute(object p)
@@ -71,10 +94,12 @@ namespace Mod1_Final.ViewModels
             if ((string)p == "(" && Field == "0")
             {
                 Field = (string)p;
+                FieldToShow = (string)p;
                 openBrCounter++;
             }
-            else if ((string)p == ")" && (Byte.TryParse(Field.Substring(Field.Length - 1), out byte r) || Field.Substring(Field.Length - 1) == ")") && closeBrCounter < openBrCounter)
+            else if ((string)p == ")" && (Field.LastIndexOfAny(numbers) == Field.Length - 1 || Field.Substring(Field.Length - 1) == ")") && closeBrCounter < openBrCounter)
             {
+                FieldToShow += (string)p;
                 int openBrInd = Field.LastIndexOf('(');
                 string expr = Field.Substring(openBrInd + 1);
                 if (expr.Contains("+"))
@@ -90,6 +115,7 @@ namespace Mod1_Final.ViewModels
             else if ((string)p == "(" && !(Field.EndsWith(",") || Field.EndsWith(")")))
             {
                 Field += (string)p;
+                FieldToShow += (string)p;
                 openBrCounter++;
             }
         }
@@ -98,12 +124,34 @@ namespace Mod1_Final.ViewModels
             return true;
         }
         #endregion
+
         #region OperationCommand
         public ICommand OperationCommand { get; }
         private void OnOperationCommandExecute(object p)
         {
-            if (!(Field.EndsWith("+") || Field.EndsWith("-") || Field.EndsWith("*") || Field.EndsWith("/") || Field.EndsWith(",")))
+            if ((string)p == "*" || (string)p == "/")
+            {
+                int openBrInd = Field.LastIndexOf('(') == -1 ? 0 : Field.LastIndexOf('(');
+                expression = Field.Substring(Field.LastIndexOf('(') + 1);
+                if (Field.Substring(openBrInd).Contains("*"))
+                    Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Mult(expression));
+                else if (Field.Substring(openBrInd).Contains("/"))
+                    Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Div(expression));
+            }
+            else if ((string)p == "+" || (string)p == "-")
+            {
+                int openBrInd = Field.LastIndexOf('(') == -1 ? 0 : Field.LastIndexOf('(');
+                expression = Field.Substring(Field.LastIndexOf('(') + 1);
+                if (Field.Substring(openBrInd).Contains("+"))
+                    Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Add(expression));
+                else if (Field.Substring(openBrInd).Contains("-"))
+                    Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Sub(expression));
+            }
+            if (Field.LastIndexOfAny(numbers) == Field.Length - 1)
+            {
                 Field += (string)p;
+                FieldToShow += (string)p;
+            }
         }
         private bool CanOperationCommandExecuted(object p)
         {
@@ -113,6 +161,7 @@ namespace Mod1_Final.ViewModels
                 return false;
         }
         #endregion
+
         #region CountCommand
         public ICommand CountCommand { get; }
         private void OnCountCommandExecute(object p)
@@ -165,6 +214,7 @@ namespace Mod1_Final.ViewModels
                 return false;
         }
         #endregion
+
         #region DeleteCommand
         public ICommand DeleteCommand { get; }
         private void OnDeleteCommandExecute(object p)
@@ -172,6 +222,7 @@ namespace Mod1_Final.ViewModels
             if ((string)p == "ac")
             {
                 Field = "0";
+                FieldToShow = null;
                 openBrCounter = closeBrCounter = 0;
             }
             else
@@ -183,9 +234,13 @@ namespace Mod1_Final.ViewModels
                     else if (Field.Substring(Field.Length - 1) == ")")
                         closeBrCounter--;
                     Field = Field.Remove(Field.Length - 1, 1);
+                    FieldToShow = FieldToShow.Remove(FieldToShow.Length - 1, 1);
                 }
                 else
+                {
                     Field = "0";
+                    FieldToShow = null;
+                }
             }
         }
         private bool CanDeleteCommandExecuted(object p)
@@ -193,6 +248,7 @@ namespace Mod1_Final.ViewModels
             return true;
         }
         #endregion
+
         #region PowCommand
         public ICommand PowCommand { get; }
         private void OnPowCommandExecute(object p)
@@ -201,6 +257,7 @@ namespace Mod1_Final.ViewModels
             {
                 Double.TryParse(Field.Substring(Field.LastIndexOfAny(operators) + 1), out double v);
                 Field += "^(";
+                FieldToShow += "^(";
             }
             else
             {
@@ -212,7 +269,7 @@ namespace Mod1_Final.ViewModels
         }
         private bool CanPowCommandExecuted(object p)
         {
-            if (Byte.TryParse(Field.Substring(Field.Length - 1), out byte r))
+            if (Field.LastIndexOfAny(numbers) == Field.Length - 1)
                 return true;
             else
                 return false;
