@@ -112,7 +112,7 @@ namespace Mod1_Final.ViewModels
                     Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Div(expr));
                 closeBrCounter++;
             }
-            else if ((string)p == "(" && !(Field.EndsWith(",") || Field.EndsWith(")")))
+            else if ((string)p == "(" && !(Field.EndsWith(",") || Field.EndsWith(")") || (Field.LastIndexOfAny(numbers) == Field.Length - 1)))
             {
                 Field += (string)p;
                 FieldToShow += (string)p;

@@ -27,10 +27,15 @@
                HorizontalAlignment="Left"
                MouseUp="Image_MouseUp"/>
         <TextBlock Text="{Binding Path=FieldToShow}"
+                   Style="{DynamicResource TextBlockStyle}"
                    Width="300"
+                   MinWidth="150"
                    Height="50"
                    VerticalAlignment="Top"
-                   HorizontalAlignment="Right"/>
+                   HorizontalAlignment="Right"
+                   Padding="5"
+                   TextAlignment="Right"
+                   FontSize="16"/>
         <UniformGrid Grid.Row="1" Columns="4" Rows="6">
             <Button Content="AC" Command="{Binding Path=DeleteCommand}" CommandParameter="ac"/>
             <Button Content="%"/>
