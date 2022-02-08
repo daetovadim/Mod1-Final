@@ -27,7 +27,11 @@ namespace Mod1_Final.ViewModels
         private byte openBrCounter = 0;
         private byte closeBrCounter = 0;
         private char[] operators = { '+', '-', '*', '/', '(' };
+        private char[] primarly = { '*', '/' };
+        private char[] secondary = { '+', '-' };
         private char[] numbers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+        private int indOfSecondary;
+        private int indOfPrimarly;
         #endregion Fields
 
         #region Properties
@@ -140,12 +144,41 @@ namespace Mod1_Final.ViewModels
             }
             else if ((string)p == "+" || (string)p == "-")
             {
-                int openBrInd = Field.LastIndexOf('(') == -1 ? 0 : Field.LastIndexOf('(');
-                expression = Field.Substring(Field.LastIndexOf('(') + 1);
-                if (Field.Substring(openBrInd).Contains("+"))
-                    Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Add(expression));
-                else if (Field.Substring(openBrInd).Contains("-"))
-                    Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Sub(expression));
+                indOfSecondary = Field.LastIndexOfAny(secondary);
+                indOfPrimarly = Field.LastIndexOfAny(primarly);
+                if (indOfPrimarly != -1 && indOfSecondary != -1 && indOfPrimarly > indOfSecondary)
+                {
+                    expression = Field.Substring(indOfSecondary + 1);
+                    if (expression.Contains("*"))
+                        Field = Field.Remove(indOfSecondary + 1).Insert(indOfSecondary + 1, Calc.Mult(expression));
+                    else if (expression.Contains("/"))
+                        Field = Field.Remove(indOfSecondary + 1).Insert(indOfSecondary + 1, Calc.Div(expression));
+                    int openBrInd = Field.LastIndexOf('(') == -1 ? 0 : Field.LastIndexOf('(');
+                    expression = Field.Substring(Field.LastIndexOf('(') + 1);
+                    if (Field.Substring(openBrInd).Contains("+"))
+                        Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Add(expression));
+                    else if (Field.Substring(openBrInd).Contains("-"))
+                        Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Sub(expression));
+                }
+                else if (indOfPrimarly == -1)
+                {
+                    int openBrInd = Field.LastIndexOf('(') == -1 ? 0 : Field.LastIndexOf('(');
+                    expression = Field.Substring(Field.LastIndexOf('(') + 1);
+                    if (Field.Substring(openBrInd).Contains("+"))
+                        Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Add(expression));
+                    else if (Field.Substring(openBrInd).Contains("-"))
+                        Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Sub(expression));
+
+                }
+                else if (indOfSecondary == -1)
+                {
+                    int openBrInd = Field.LastIndexOf('(') == -1 ? 0 : Field.LastIndexOf('(');
+                    expression = Field.Substring(Field.LastIndexOf('(') + 1);
+                    if (Field.Substring(openBrInd).Contains("*"))
+                        Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Mult(expression));
+                    else if (Field.Substring(openBrInd).Contains("/"))
+                        Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Div(expression));
+                }
             }
             if (Field.LastIndexOfAny(numbers) == Field.Length - 1)
             {
