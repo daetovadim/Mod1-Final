@@ -32,9 +32,9 @@ namespace Mod1_Final.Models
             string x = (Convert.ToDouble(members[0]) / Convert.ToDouble(members[1])).ToString();
             return x;
         }
-        public static bool BracketsCheck(string s, out int[,] indArray, int a = 0) //Метод определяет правильность расстановки скобок 
-        {                                                                          //и определяет очерёдность их раскрытия
-            if (a == 0)
+        public static bool BracketsCheck(string s, out int[,] indArray, int a = 0) //Доработанный метод из 2 задания 
+        {                                                                          //определяет правильность расстановки скобок и очерёдность их раскрытия
+            if (a == 0)                                                            //не используется
             {
                 indArray = null;
                 return true;

@@ -116,6 +116,12 @@ namespace Mod1_Final.ViewModels
                     Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Mult(expr));
                 else if (expr.Contains("/"))
                     Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Div(expr));
+                else if (Field.Contains("^"))
+                {
+                    int indToExp = Field.StartsWith("-") ? 0 : Field.LastIndexOfAny(new char[] { '+', '-', '*', '/' }) + 1;
+                    Double.TryParse(Field.Substring(indToExp, Field.LastIndexOf('^') - indToExp), out double val);
+                    Field = Field.Remove(indToExp).Insert(indToExp, Math.Pow(val, Convert.ToDouble(expr)).ToString());
+                }
                 closeBrCounter++;
             }
             else if ((string)p == "(" && !(Field.EndsWith(",") || Field.EndsWith(")") || (Field.LastIndexOfAny(numbers) == Field.Length - 1)))
@@ -148,7 +154,7 @@ namespace Mod1_Final.ViewModels
             {
                 indOfSecondary = Field.LastIndexOfAny(secondary);
                 indOfPrimarly = Field.LastIndexOfAny(primarly);
-                if (indOfPrimarly != -1 && indOfSecondary != -1 && indOfPrimarly > indOfSecondary)
+                if (indOfPrimarly != -1 && indOfSecondary != -1 && indOfPrimarly > indOfSecondary && !Field.StartsWith("-"))
                 {
                     expression = Field.Substring(indOfSecondary + 1);
                     if (expression.Contains("*"))
@@ -168,6 +174,10 @@ namespace Mod1_Final.ViewModels
                     expression = Field.Substring(Field.LastIndexOf('(') + 1);
                     if (Field.Substring(openBrInd).Contains("+"))
                         Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Add(expression));
+                    else if (Field.StartsWith("-"))
+                    {
+
+                    }
                     else if (Field.Substring(openBrInd).Contains("-"))
                         Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Sub(expression));
 
@@ -201,45 +211,16 @@ namespace Mod1_Final.ViewModels
         public ICommand CountCommand { get; }
         private void OnCountCommandExecute(object p)
         {
-            if (Field.Contains("("))
-            {
-                if (Calc.BracketsCheck(Field, out int[,] indArray, openBrCounter))
-                {
-                    for (int i = 0; i < indArray.Length / 2; i++)
-                    {
-                        int openBrInd = indArray[i, 0];
-                        int closeBrInd = indArray[i, 1];
-                        int expressionLength = closeBrInd - openBrInd - 1;
-                        string undOperation = Field.Substring(openBrInd, expressionLength + 2);
-                        string expression = Field.Substring(openBrInd + 1, expressionLength);
-                        if (expression.Contains("+"))
-                        {
-                            undOperation = Calc.Add(expression).PadRight(expressionLength + 2);
-                            Field = Field.Remove(openBrInd, expressionLength + 2).Insert(openBrInd, undOperation);
-                        }
-                        else if (undOperation.Contains("-"))
-                        {
-                            undOperation = Calc.Sub(expression).PadRight(expressionLength + 2);
-                            Field = Field.Remove(openBrInd, expressionLength + 2).Insert(openBrInd, undOperation);
-                        }
-                        else if (undOperation.Contains("*"))
-                        {
-                            undOperation = Calc.Mult(expression).PadRight(expressionLength + 2);
-                            Field = Field.Remove(openBrInd, expressionLength + 2).Insert(openBrInd, undOperation);
-                        }
-                        else if (undOperation.Contains("/"))
-                        {
-                            undOperation = Calc.Div(expression).PadRight(expressionLength + 2);
-                            Field = Field.Remove(openBrInd, expressionLength + 2).Insert(openBrInd, undOperation);
-                        }
-                    }
-                }
-            }
-            else if (Field.Contains("^"))
-            {
-
-            }
-
+            int openBrInd = Field.LastIndexOf('(') == -1 ? 0 : Field.LastIndexOf('(');
+            expression = Field.Substring(Field.LastIndexOf('(') + 1);
+            if (Field.Substring(openBrInd).Contains("*"))
+                Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Mult(expression));
+            else if (Field.Substring(openBrInd).Contains("/"))
+                Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Div(expression));
+            else if (Field.Substring(openBrInd).Contains("+"))
+                Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Add(expression));
+            else if (Field.Substring(openBrInd).Contains("-"))
+                Field = Field.Remove(openBrInd).Insert(openBrInd, Calc.Sub(expression));
         }
         private bool CanCountCommandExecuted(object p)
         {
@@ -293,6 +274,7 @@ namespace Mod1_Final.ViewModels
                 Double.TryParse(Field.Substring(Field.LastIndexOfAny(operators) + 1), out double v);
                 Field += "^(";
                 FieldToShow += "^(";
+                openBrCounter++;
             }
             else
             {
@@ -349,6 +331,24 @@ namespace Mod1_Final.ViewModels
         }
         #endregion
 
+        #region PercentCommand
+        public ICommand PercentCommand { get; }
+        private void OnPercentCommandExecute(object p)
+        {
+            int startInd = Field.LastIndexOfAny(operators) + 1;
+            Double.TryParse(Field.Substring(startInd), out double result);
+            Field = Field.Remove(startInd).Insert(startInd, (result / 100).ToString());
+            FieldToShow += "%";
+        }
+        private bool CanPercentCommandExecuted(object p)
+        {
+            if (Field.LastIndexOfAny(numbers) == Field.Length - 1)
+                return true;
+            else
+                return false;
+        }
+        #endregion
+
         public CalculatorViewModel()
         {
             NumCommand = new RelayCommand(OnNumCommandExecute, CanNumCommandExecuted);
@@ -358,6 +358,7 @@ namespace Mod1_Final.ViewModels
             DeleteCommand = new RelayCommand(OnDeleteCommandExecute, CanDeleteCommandExecuted);
             PowCommand = new RelayCommand(OnPowCommandExecute, CanPowCommandExecuted);
             PlusMinusCommand = new RelayCommand(OnPlusMinusCommandExecute, CanPlusMinusCommandExecuted);
+            PercentCommand = new RelayCommand(OnPercentCommandExecute, CanPercentCommandExecuted);
         }
     }
 }

@@ -38,7 +38,7 @@
                    FontSize="16"/>
         <UniformGrid Grid.Row="1" Columns="4" Rows="6">
             <Button Content="AC" Command="{Binding Path=DeleteCommand}" CommandParameter="ac"/>
-            <Button Content="%"/>
+            <Button Content="%" Command="{Binding Path=PercentCommand}"/>
             <Button Content="√" Command="{Binding Path=PowCommand}" CommandParameter="sqrt"/>
             <Button Content="←" Command="{Binding Path=DeleteCommand}" CommandParameter="c"/>
             <Button Content="(" Command="{Binding Path=BracketsCommand}" CommandParameter="("/>
