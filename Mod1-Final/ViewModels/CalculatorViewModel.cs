@@ -73,10 +73,12 @@ namespace Mod1_Final.ViewModels
                 Field += p.ToString();
                 FieldToShow += p.ToString();
             }
-            else if (Field == "0")
+            else if (Field == "0" || Field == "+")
             {
                 Field = "";
                 Field += p.ToString();
+                if (FieldToShow == "+")
+                    FieldToShow = null;
                 FieldToShow += p.ToString();
             }
             else if (!(Field.EndsWith(")") || (string)p == ","))
@@ -309,6 +311,44 @@ namespace Mod1_Final.ViewModels
         }
         #endregion
 
+        #region PlusMinusCommand
+        public ICommand PlusMinusCommand { get; }
+        private void OnPlusMinusCommandExecute(object p)
+        {
+            indOfPrimarly = Field.LastIndexOfAny(primarly);
+            indOfSecondary = Field.LastIndexOfAny(secondary);
+            int plusInd = Field.LastIndexOf('+');
+            int minusInd = Field.LastIndexOf('-');
+            if (indOfPrimarly > indOfSecondary)
+            {
+                Field = Field.Insert(indOfPrimarly + 1, "-");
+                FieldToShow = FieldToShow.Insert(FieldToShow.LastIndexOfAny(primarly), "-");
+            }
+            else if (plusInd > minusInd)
+            {
+                Field = Field.Remove(plusInd, 1).Insert(plusInd, "-");
+                FieldToShow = FieldToShow.Remove(FieldToShow.LastIndexOf('+'), 1).Insert(FieldToShow.LastIndexOf('+'), "-");
+            }
+            else if (minusInd > plusInd)
+            {
+                Field = Field.Remove(minusInd, 1).Insert(minusInd, "+");
+                FieldToShow = FieldToShow.Remove(FieldToShow.LastIndexOf('-'), 1).Insert(FieldToShow.LastIndexOf('-'), "+");
+            }
+            else
+            {
+                Field = Field == "0" ? "-" : Field.Insert(0, "-");
+                FieldToShow = FieldToShow?.Insert(0, "-") ?? "-";
+            }
+        }
+        private bool CanPlusMinusCommandExecuted(object p)
+        {
+            if (Field.LastIndexOfAny(numbers) == Field.Length - 1 || Field.EndsWith("-") || Field.EndsWith("+"))
+                return true;
+            else
+                return false;
+        }
+        #endregion
+
         public CalculatorViewModel()
         {
             NumCommand = new RelayCommand(OnNumCommandExecute, CanNumCommandExecuted);
@@ -317,6 +357,7 @@ namespace Mod1_Final.ViewModels
             CountCommand = new RelayCommand(OnCountCommandExecute, CanCountCommandExecuted);
             DeleteCommand = new RelayCommand(OnDeleteCommandExecute, CanDeleteCommandExecuted);
             PowCommand = new RelayCommand(OnPowCommandExecute, CanPowCommandExecuted);
+            PlusMinusCommand = new RelayCommand(OnPlusMinusCommandExecute, CanPlusMinusCommandExecuted);
         }
     }
 }

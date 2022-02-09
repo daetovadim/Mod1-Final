@@ -57,7 +57,7 @@
             <Button Content="2" Command="{Binding Path=NumCommand}" CommandParameter="2"/>
             <Button Content="3" Command="{Binding Path=NumCommand}" CommandParameter="3"/>
             <Button Content="+" Command="{Binding Path=OperationCommand}" CommandParameter="+"/>
-            <Button Content="+/-"/>
+            <Button Content="+/-" Command="{Binding Path=PlusMinusCommand}"/>
             <Button Content="0" Command="{Binding Path=NumCommand}" CommandParameter="0"/>
             <Button Content="," Command="{Binding Path=NumCommand}" CommandParameter=","/>
             <Button Content="=" Command="{Binding Path=CountCommand}"/>
